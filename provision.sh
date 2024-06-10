@@ -2,7 +2,17 @@
 
 echo 'Start!'
 
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2
+# install python3.7 since it is required for VS code debugging of django
+if [ ! -f "/usr/bin/python3.7" ]; then
+  sudo apt-get update
+  sudo apt-get install -y build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev
+  sudo apt-get install -y python3.7-dev
+  sudo apt-get install -y python3.7
+else
+  echo "python3.7 已安装"
+fi
+
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.7 2
 
 cd /vagrant
 
@@ -30,12 +40,13 @@ fi
 # python -m pip install --upgrade pip
 # 换源完美解决
 # 安装pip所需依赖
-pip install --upgrade setuptools
-pip install --ignore-installed wrapt
+# explicitly use "python -m pip install" so that packages is installed for python3.7
+python -m pip install --upgrade setuptools
+python -m pip install --ignore-installed wrapt
 # 安装pip最新版
-pip install -U pip
+python -m pip install -U pip
 # 根据 requirements.txt 里的记录安装 pip package，确保所有版本之间的兼容性
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 
 # 设置mysql的root账户的密码为yourpassword
